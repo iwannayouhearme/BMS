@@ -3,11 +3,11 @@ spring:
     name: bms
   datasource:
     username: root
-    url: jdbc:mysql://139.199.160.101:3306/bms
-    password: ly961219
+    url: jdbc:mysql://127.0.0.1:3306/bms
+    password: root
     driver-class-name: com.mysql.jdbc.Driver
   redis:
-    host: 139.199.160.101
+    host: 127.0.0.1
     port: 6379
     password: redis
 server:
