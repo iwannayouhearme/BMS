@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.fhh.constant.UserConstant;
 import com.fhh.dao.BillDao;
 import com.fhh.dao.UserDao;
+import com.fhh.entity.BillModel;
 import com.fhh.entity.User;
 import com.fhh.exception.BMSException;
 import com.fhh.model.bill.GetBillByUserModel;
+import com.fhh.model.bill.UpdateBillModel;
 import com.fhh.model.user.AddUserModel;
 import com.fhh.model.user.UpdateUserModel;
 import com.fhh.service.UserService;
@@ -111,7 +113,25 @@ public class UserServiceImpl implements UserService {
         // 更新账单表中冗余的用户信息字段
         //查询更新的用户关联的所有账单
         GetBillByUserModel billModel = new GetBillByUserModel();
-        billDao.getBillByUser(billModel);
+        billModel.setUserId(model.getUserId());
+        List<BillModel> billByUser = billDao.getBillByUser(billModel);
+        if (!billByUser.isEmpty()) {
+            for (BillModel bill : billByUser) {
+                UpdateBillModel updateBillModel = new UpdateBillModel();
+                updateBillModel.setBillId(bill.getId());
+                updateBillModel.setBorrowerMan(model.getRealName());
+                updateBillModel.setBorrowerNikeName(model.getNickName());
+                updateBillModel.setBorrowerManId(bill.getBorrowerManId());
+                updateBillModel.setBtype(bill.getBtype());
+                updateBillModel.setGoodsId(bill.getGoodsId());
+                updateBillModel.setGoodsName(bill.getGoodsName());
+                updateBillModel.setLoanAmount(bill.getLoanAmount());
+                int updateBill = billDao.updateBill(updateBillModel);
+                if (updateBill < 1) {
+                    throw new BMSException("更新用户信息失败,请联系管理员处理！");
+                }
+            }
+        }
         //更新用户信息成功后刷新redis中该用户的信息
         User updateUserInfo = userDao.getUserById(model.getUserId());
         stringRedisTemplate.opsForValue().set(UserConstant.RedisConstant.USERINFO + model.getUserId(), JSON.toJSONString(updateUserInfo));

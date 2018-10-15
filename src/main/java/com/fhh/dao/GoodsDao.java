@@ -50,4 +50,13 @@ public interface GoodsDao {
      * @date 2018/10/13 22:18
      **/
     int delGoods(@Param("goodsId") String goodsId, @Param("delPer") String delPer);
+
+    /**
+     * 根据商品类别id查询商品
+     * @param goodsTypeId 商品类别id
+     * @return
+     * @author biubiubiu小浩
+     * @date 2018/10/15 17:44
+     **/
+    List<GoodsModel> getGoodsListByGoodsTypeId(@Param("goodsTypeId") String goodsTypeId);
 }

@@ -66,9 +66,24 @@ public class GoodsTypeController extends BaseController {
     @PostMapping(value = "/bms/goodsType/updateGoodsTypeById")
     public String updateGoodsTypeById(HttpServletRequest request, HttpServletResponse response,
                                       @NotBlank(message = "商品类别id不能为空！") String goodsTypeId,
-                                      @NotBlank(message = "商品类别名称不能为空！") String goodsTypeName) {
+                                      @NotBlank(message = "商品类别名称不能为空！") String goodsTypeName) throws BMSException {
         User user = this.getUserSession(request);
-        goodsTypeService.updateGoodsType(goodsTypeId,goodsTypeName,user);
-        return null;
+        boolean flag = goodsTypeService.updateGoodsType(goodsTypeId, goodsTypeName, user);
+        return this.poClient(response, flag);
+    }
+
+    /**
+     * @param goodsTypeId 商品类别id
+     * @return
+     * @throws BMSException
+     * @author biubiubiu小浩
+     * @date 2018/10/15 17:49
+     **/
+    @PostMapping(value = "/bms/goodsType/delGoodsType")
+    public String delGoodsTypeById(HttpServletRequest request, HttpServletResponse response,
+                                   @NotBlank(message = "商品id不能为空！") String goodsTypeId) throws BMSException {
+        User user = this.getUserSession(request);
+        boolean flag = goodsTypeService.delGoodsType(goodsTypeId, user);
+        return this.poClient(response, flag);
     }
 }

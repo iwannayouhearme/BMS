@@ -33,7 +33,7 @@ public class BillServiceImpl extends BaseService implements BillService {
     @Transactional(rollbackFor = Exception.class)
     public boolean addBillByAdmin(AddBillModel model, User user) throws BMSException {
         //首先判断当前用户是否有权限添加账单
-        if (!this.judgeHasPower(user)) {
+        if (!this.judgeHasPower(user)){
             throw new BMSException("无权限用户操作！");
         }
         model.setUuId(DataUtil.getUUid());

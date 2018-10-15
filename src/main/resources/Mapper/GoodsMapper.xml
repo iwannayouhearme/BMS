@@ -72,4 +72,13 @@
         UPDATE t_goods SET isdel = 1,del_per = #{delPer} WHERE id = #{goodsId}
     </update>
 
+    <select id="getGoodsByGoodsTypeId" resultMap="GoodsResult">
+        SELECT
+          id,
+          goods_name,
+        FROM
+          t_goods
+        WHERE
+          isdel = 0 AND goods_type_id = #{goodsTypeId}
+    </select>
 </mapper>

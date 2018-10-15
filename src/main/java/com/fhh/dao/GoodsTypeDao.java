@@ -42,12 +42,13 @@ public interface GoodsTypeDao {
 
     /**
      * @param goodsTypeName 商品类别名称
+     * @param goodsTypeId 商品类别id
      * @return
      * @description 更新商品类型名称
      * @author biubiubiu小浩
      * @date 2018/10/12 17:20
      **/
-    int updateGoodsTypeById(@Param("goodsTypeName") String goodsTypeName);
+    int updateGoodsTypeById(@Param("goodsTypeName") String goodsTypeName,@Param("goodsTypeId")String goodsTypeId);
 
     /**
      * @param goodsTypeId 商品类别id

@@ -43,5 +43,16 @@ public interface GoodsTypeService {
      * @return
      * @throws
      **/
-    boolean updateGoodsType(String goodsTypeId, String goodsTypeName, User user);
+    boolean updateGoodsType(String goodsTypeId, String goodsTypeName, User user) throws BMSException;
+
+    /**
+     * 删除商品类别
+     * @author biubiubiu小浩
+     * @date 2018/10/15 17:19
+     * @param goodsTypeId 商品类别id
+     * @param user 用户
+     * @return
+     * @throws 
+     **/
+    boolean delGoodsType(String goodsTypeId, User user) throws BMSException;
 }
