@@ -15,3 +15,5 @@ server:
 mybatis:
   mapper-locations: classpath:Mapper/*.xml
   type-aliases-package: com.fhh.entity
+
+lb: 123
