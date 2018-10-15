@@ -31,5 +31,5 @@ public interface BillService {
      * @param user
      * @return
      **/
-    Map<String,Object> getBillByUser(GetBillByUserModel model, User user);
+    Map<String,Object> getBillByUser(GetBillByUserModel model, User user) throws BMSException;
 }

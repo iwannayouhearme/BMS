@@ -30,8 +30,7 @@
     <update id="updateGoodsById">
       UPDATE
         t_goods
-      SET
-      <trim>
+      <set>
           <if test="goodsName !=null and goodsName != ''">
               goods_name = #{goodsName},
           </if>
@@ -42,9 +41,9 @@
               goods_type_id = #{goodsTypeId},
           </if>
           <if test="fullPinyin !=null and fullPinyin != ''">
-              full_pinyin = #{fullPinyin}
+              full_pinyin = #{fullPinyin},
           </if>
-      </trim>
+      </set>
       WHERE id = #{goodsId}
     </update>
 

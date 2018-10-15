@@ -1,6 +1,7 @@
 package com.fhh.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.fhh.constant.BillConstant;
 import com.fhh.constant.UserConstant;
 import com.fhh.dao.BillDao;
 import com.fhh.dao.UserDao;
@@ -117,18 +118,16 @@ public class UserServiceImpl implements UserService {
         List<BillModel> billByUser = billDao.getBillByUser(billModel);
         if (!billByUser.isEmpty()) {
             for (BillModel bill : billByUser) {
-                UpdateBillModel updateBillModel = new UpdateBillModel();
-                updateBillModel.setBillId(bill.getId());
-                updateBillModel.setBorrowerMan(model.getRealName());
-                updateBillModel.setBorrowerNikeName(model.getNickName());
-                updateBillModel.setBorrowerManId(bill.getBorrowerManId());
-                updateBillModel.setBtype(bill.getBtype());
-                updateBillModel.setGoodsId(bill.getGoodsId());
-                updateBillModel.setGoodsName(bill.getGoodsName());
-                updateBillModel.setLoanAmount(bill.getLoanAmount());
-                int updateBill = billDao.updateBill(updateBillModel);
-                if (updateBill < 1) {
-                    throw new BMSException("更新用户信息失败,请联系管理员处理！");
+                if (bill.getBstatus().equals(BillConstant.Bstatus.UNPAY)) {
+                    UpdateBillModel updateBillModel = new UpdateBillModel();
+                    updateBillModel.setBillId(bill.getId());
+                    updateBillModel.setBorrowerMan(model.getRealName());
+                    updateBillModel.setBorrowerNikeName(model.getNickName());
+                    updateBillModel.setBorrowerManId(bill.getBorrowerManId());
+                    int updateBill = billDao.updateBill(updateBillModel);
+                    if (updateBill < 1) {
+                        throw new BMSException("更新用户信息失败,请联系管理员处理！");
+                    }
                 }
             }
         }

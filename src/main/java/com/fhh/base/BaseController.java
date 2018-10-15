@@ -40,11 +40,12 @@ public class BaseController {
 
     /**
      * 获取当前用户登录token 不带前缀
-     * @author ：jfy
-     * @date ：2018年6月22日 上午11:26:16
-     * @param request
+     * @author biubiubiu小浩
+     * @date 2018/10/15 22:39
+     * @param
      * @return
-     */
+     * @throws
+     **/
     protected String getToken(HttpServletRequest request) {
         return CookiesUtil.getCookieByToken(request);
     }

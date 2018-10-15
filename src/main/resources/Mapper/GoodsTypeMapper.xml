@@ -27,12 +27,11 @@
     <update id="updateGoodsTypeById">
         UPDATE
         t_goods_type
-        SET
-        <trim>
+        <set>
             <if test="goodsTypeName ! = null and goodsTypeName ! =''">
                 goods_type_name = #{goodsTypeName}
             </if>
-        </trim>
+        </set>
         WHERE
         id = #{goodsTypeId}
     </update>

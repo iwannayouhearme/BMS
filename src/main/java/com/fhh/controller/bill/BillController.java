@@ -1,5 +1,7 @@
 package com.fhh.controller.bill;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fhh.base.BaseController;
 import com.fhh.entity.User;
 import com.fhh.exception.BMSException;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * 功能描述：（账单服务控制层）
@@ -55,9 +58,12 @@ public class BillController extends BaseController {
      **/
     @GetMapping(value = "/bms/bill/getBillByUser")
     public String getBillByUser(HttpServletRequest request,
-                                HttpServletResponse response, @Valid GetBillByUserModel model, BindingResult result) {
+                                HttpServletResponse response, @Valid GetBillByUserModel model, BindingResult result) throws BMSException {
         User user = this.getUserSession(request);
-        billService.getBillByUser(model, user);
-        return null;
+        Map<String, Object> billByUser = billService.getBillByUser(model, user);
+        JSONObject jsonObject = JSONObject.parseObject(JSON.toJSONString(billByUser));
+        return this.poClient(response,jsonObject);
     }
+
+
 }

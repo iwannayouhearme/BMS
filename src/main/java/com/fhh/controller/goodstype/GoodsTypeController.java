@@ -16,6 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+/**
+ * @description 商品种类控制层
+ * @author  biubiubiu小浩
+ * @date 2018/10/15 21:37
+ **/
 @Controller
 public class GoodsTypeController extends BaseController {
     @Autowired

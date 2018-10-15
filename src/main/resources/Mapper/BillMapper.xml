@@ -69,6 +69,8 @@
         loan_amount,
         btype,
         borrower_man,
+        borrower_man_id,
+        create_man_id,
         borrower_nike_name,
         create_man_name,
         bstatus,
@@ -97,20 +99,25 @@
     <update id="updateBill">
        UPDATE
           t_bill
-       SET
-       <trim>
+       <set>
            <if test="borrowerManId !=null and borrowerManId != ''">
                borrower_man_id = #{borrowerManId},
                borrower_man = #{borrowerMan},
+           </if>
+           <if test="borrowerNikeName !=null and borrowerNikeName !=''">
                borrower_nike_name = #{borrowerNikeName},
            </if>
-           loan_amount = #{loanAmount},
-           btype = #{btype},
+           <if test="loanAmount !=null and loanAmount != ''">
+               loan_amount = #{loanAmount},
+           </if>
+           <if test="btype !=null and btype != ''">
+               btype = #{btype},
+           </if>
            <if test="btype == 0">
                goods_name = #{goodsName},
-               goods_id = #{goodsId}
+               goods_id = #{goodsId},
            </if>
-       </trim>
+       </set>
        WHERE id = #{billId}
     </update>
 

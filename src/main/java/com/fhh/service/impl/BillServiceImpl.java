@@ -1,6 +1,8 @@
 package com.fhh.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.fhh.base.BaseService;
+import com.fhh.constant.BillConstant;
 import com.fhh.dao.BillDao;
 import com.fhh.entity.BillModel;
 import com.fhh.entity.User;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ public class BillServiceImpl extends BaseService implements BillService {
     @Transactional(rollbackFor = Exception.class)
     public boolean addBillByAdmin(AddBillModel model, User user) throws BMSException {
         //首先判断当前用户是否有权限添加账单
-        if (!this.judgeHasPower(user)){
+        if (!this.judgeHasPower(user)) {
             throw new BMSException("无权限用户操作！");
         }
         model.setUuId(DataUtil.getUUid());
@@ -51,9 +54,40 @@ public class BillServiceImpl extends BaseService implements BillService {
     }
 
     @Override
-    public Map<String, Object> getBillByUser(GetBillByUserModel model, User user) {
+    public Map<String, Object> getBillByUser(GetBillByUserModel model, User user) throws BMSException {
+        Map<String, Object> data = new HashMap<>(16);
         List<BillModel> billModelList = billDao.getBillByUser(model);
-
-        return null;
+        //总借款金额
+        int totalMoney = 0;
+        //已还款总金额
+        int totalPaymoney = 0;
+        //未还款总金额
+        int totalUnpayMoney = 0;
+        if (!billModelList.isEmpty()) {
+            for (BillModel billModel : billModelList) {
+                //已还款
+                if (BillConstant.Bstatus.HASPAY.equals(billModel.getBstatus())) {
+                    try {
+                        totalPaymoney += Integer.parseInt(billModel.getLoanAmount());
+                    } catch (Exception e) {
+                        throw new BMSException("借款金额中存在错误的数据，请联系管理员处理!");
+                    }
+                }else {
+                    try {
+                        totalUnpayMoney += Integer.parseInt(billModel.getLoanAmount());
+                    } catch (Exception e) {
+                        throw new BMSException("借款金额中存在错误的数据，请联系管理员处理!");
+                    }
+                }
+            }
+        }
+        totalMoney = totalPaymoney+totalUnpayMoney;
+        data.put("totalMoney",totalMoney);
+        data.put("totalPaymoney",totalPaymoney);
+        data.put("totalUnpayMoney",totalUnpayMoney);
+        data.put("billList", JSON.toJSONString(billModelList));
+        Map<String,Object> result = new HashMap<>(16);
+        result.put("data",data);
+        return result;
     }
 }

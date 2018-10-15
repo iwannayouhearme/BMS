@@ -68,15 +68,14 @@
     <update id="updateUser">
         UPDATE
         t_user
-        SET
-        <trim>
+        <set>
             <if test="realName !=null and realName !=''">
                 urealname = #{realName},
             </if>
-            <if test="unickname !=null and unickname !=''">
-                unickname = #{nickName}
+            <if test="nickName !=null and nickName !=''">
+                unickname = #{nickName},
             </if>
-        </trim>
+        </set>
         WHERE id = #{userId}
     </update>
 
