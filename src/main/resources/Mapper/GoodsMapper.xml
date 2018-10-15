@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fhh.dao.GoodsDao">
+    <resultMap id="GoodsResult" type="com.fhh.entity.GoodsModel">
+        <id column="id" property="id"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_price" property="goodsPrice"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+        <result column="full_pinyin" property="fullPinyin"/>
+    </resultMap>
+
+    <insert id="addGoods">
+        INSERT INTO t_goods (
+          id,
+          goods_name,
+          goods_price,
+          goods_type_id,
+          full_pinyin
+        )
+        VALUES
+          (
+            #{goodsId},
+            #{goodsName},
+            #{goodsPrice},
+            #{goodsTypeId},
+            #{fullPinyin}
+          )
+    </insert>
+
+    <update id="updateGoodsById">
+      UPDATE
+        t_goods
+      SET
+      <trim>
+          <if test="goodsName !=null and goodsName != ''">
+              goods_name = #{goodsName},
+          </if>
+          <if test="goodsPrice !=null and goodsPrice != ''">
+              goods_price = #{goodsPrice},
+          </if>
+          <if test="goodsTypeId !=null and goodsTypeId != ''">
+              goods_type_id = #{goodsTypeId},
+          </if>
+          <if test="fullPinyin !=null and fullPinyin != ''">
+              full_pinyin = #{fullPinyin}
+          </if>
+      </trim>
+      WHERE id = #{goodsId}
+    </update>
+
+    <select id="getGoods" resultMap="GoodsResult">
+      SELECT
+        id,
+        rowid,
+        goods_name,
+        goods_price,
+        goods_type_id,
+        full_pinyin
+      FROM
+        t_goods
+      WHERE
+      <trim>
+          isdel = #{isdel}
+          <if test="goodsId !=null and goodsId !=''">
+              AND id = #{goodsId}
+          </if>
+      </trim>
+        ORDER BY rowid ASC
+    </select>
+
+    <update id="delGoods">
+        UPDATE t_goods SET isdel = 1,del_per = #{delPer} WHERE id = #{goodsId}
+    </update>
+
+</mapper>

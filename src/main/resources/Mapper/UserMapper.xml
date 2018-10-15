@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fhh.dao.UserDao">
+    <resultMap id="UserResult" type="com.fhh.entity.User">
+        <id column="id" property="id"/>
+        <result column="rowid" property="rowid"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="isdel" property="isdel"/>
+        <result column="del_per" property="del_per"/>
+        <result column="ulogin_number" property="loginNumber"/>
+        <result column="upassword" property="passWord"/>
+        <result column="urealname" property="realName"/>
+        <result column="unickname" property="nickName"/>
+        <result column="utype" property="type"/>
+        <result column="create_man" property="createManId"/>
+    </resultMap>
+
+    <select id="selectByNumberAndPassword" resultMap="UserResult">
+        SELECT
+          urealname,
+          unickname,
+          utype,
+          ulogin_number,
+          upassword,
+          id
+        FROM
+          t_user
+        WHERE ulogin_number = #{loginNumber}
+          AND upassword = #{password}
+          AND isdel = 0
+    </select>
+
+    <select id="getUserById" resultMap="UserResult">
+        SELECT
+          *
+        FROM
+          t_user
+        WHERE id = #{userId} AND isdel = 0
+    </select>
+
+    <insert id="addUser">
+        INSERT INTO t_user (id,ulogin_number,urealname,unickname,create_man)
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{uuId},
+            #{loginNumber},
+            #{realName},
+            <if test="nickName !=null">
+                #{nickName},
+            </if>
+            #{createManId}
+        </trim>
+    </insert>
+
+    <select id="getUserList" resultMap="UserResult">
+        SELECT
+          id,
+          rowid,
+          urealname,
+          unickname
+        FROM
+          t_user
+        WHERE isdel = 0
+        ORDER BY rowid ASC
+    </select>
+
+    <update id="updateUser">
+        UPDATE
+        t_user
+        SET
+        <trim>
+            <if test="realName !=null and realName !=''">
+                urealname = #{realName},
+            </if>
+            <if test="unickname !=null and unickname !=''">
+                unickname = #{nickName}
+            </if>
+        </trim>
+        WHERE id = #{userId}
+    </update>
+
+    <update id="delUser">
+        UPDATE t_user SET isdel = 1,del_per = #{delPer} WHERE id = #{userId}
+    </update>
+</mapper>

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: bms
+  datasource:
+    username: root
+    url: jdbc:mysql://139.199.160.101:3306/bms
+    password: ly961219
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: 139.199.160.101
+    port: 6379
+    password: redis
+server:
+  port: 8081
+mybatis:
+  mapper-locations: classpath:Mapper/*.xml
+  type-aliases-package: com.fhh.entity

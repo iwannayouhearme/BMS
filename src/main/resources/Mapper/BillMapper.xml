@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fhh.dao.BillDao">
+    <resultMap id="BillResult" type="com.fhh.entity.BillModel">
+        <id column="id" property="id"/>
+        <result column="rowid" property="rowid"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="isdel" property="isdel"/>
+        <result column="del_per" property="del_per"/>
+        <result column="borrower_man_id" property="borrowerManId"/>
+        <result column="loan_amount" property="loanAmount"/>
+        <result column="btype" property="btype"/>
+        <result column="borrower_man" property="borrowerMan"/>
+        <result column="create_man_id" property="createManId"/>
+        <result column="create_man_name" property="createManName"/>
+        <result column="borrower_nike_name" property="borrowerNikeName"/>
+        <result column="bstatus" property="bstatus"/>
+        <result column="pay_date" property="payDate"/>
+        <result column="pay_ope_man_id" property="payOpeManId"/>
+        <result column="byear_month" property="yearMonth"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="pay_source" property="paySource"/>
+    </resultMap>
+    <insert id="addBill">
+        INSERT INTO t_bill (
+        id,
+        borrower_man_id,
+        loan_amount,
+        btype,
+        borrower_man,
+        create_man_id,
+        create_man_name,
+        byear_month,
+        borrower_nike_name,
+        goods_name,
+        goods_id,
+        pay_source
+        )
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{uuId},
+            #{borrowerManId},
+            #{loanAmount},
+            #{btype},
+            #{borrowerMan},
+            #{createManId},
+            #{createManName},
+            #{yearMonth},
+            <if test="borrowerNikeName !=null">
+                #{borrowerNikeName},
+            </if>
+            <if test="goodsName !=null">
+                #{goodsName},
+            </if>
+            <if test="goodsId !=null">
+                #{goodsId},
+            </if>
+            paySource
+        </trim>
+    </insert>
+
+    <select id="getBillByUser" resultMap="BillResult">
+        SELECT
+        id,
+        rowid,
+        create_time,
+        loan_amount,
+        btype,
+        borrower_man,
+        borrower_nike_name,
+        create_man_name,
+        bstatus,
+        pay_date,
+        pay_ope_man_id,
+        byear_month,
+        goods_name,
+        goods_id,
+        pay_source
+        FROM
+        t_bill
+        WHERE
+        <trim>
+            isdel = 0
+            <if test="yearMonth !=null and yearMonth !=''">AND byear_month = #{yearMonth}</if>
+            <if test="bstatus !=null and bstatus !=''">AND bstatus = #{bstatus}</if>
+            <if test="userId != null and userId != ''">AND borrower_man_id = #{userId} </if>
+        </trim>
+        ORDER BY borrower_man_id
+    </select>
+
+    <update id="delBill">
+        UPDATE t_bill SET isdel = 1,del_per = #{delPer} WHERE id = #{billId}
+    </update>
+
+    <update id="updateBill">
+       UPDATE
+          t_bill
+       SET
+       <trim>
+           <if test="borrowerManId !=null and borrowerManId != ''">
+               borrower_man_id = #{borrowerManId},
+               borrower_man = #{borrowerMan},
+               borrower_nike_name = #{borrowerNikeName},
+           </if>
+           loan_amount = #{loanAmount},
+           btype = #{btype},
+           <if test="btype == 0">
+               goods_name = #{goodsName},
+               goods_id = #{goodsId}
+           </if>
+       </trim>
+       WHERE id = #{billId}
+    </update>
+
+    <update id="payForBill">
+        UPDATE
+          t_bill
+        SET
+          pay_date = #{payDate},
+          pay_ope_man_id = #{userId},
+          bstatus = 1,
+          pay_source = #{paySource}
+        WHERE id = #{billId}
+    </update>
+
+</mapper>

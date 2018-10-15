@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fhh.dao.GoodsTypeDao">
+    <resultMap id="GoodsTypeResult" type="com.fhh.entity.GoodsTypeModel">
+        <id column="id" property="id"/>
+        <result column="isdel" property="isdel"/>
+        <result column="goods_type_name" property="goodsTypeName"/>
+    </resultMap>
+
+    <insert id="addGoodsType">
+        INSERT INTO t_goods_type (id, goods_type_name)
+        VALUES
+          (
+            #{goodsTypeId},
+            #{goodsTypeName}
+          )
+    </insert>
+
+    <select id="getAllGoodsType" resultMap="GoodsTypeResult">
+        SELECT * FROM t_goods_type WHERE isdel = 0
+    </select>
+
+    <select id="getGoodsTypeById" resultMap="GoodsTypeResult">
+        SELECT * FROM t_goods_type WHERE isdel = #{isdel} AND id = #{goodsTypeId}
+    </select>
+
+    <update id="updateGoodsTypeById">
+        UPDATE
+        t_goods_type
+        SET
+        <trim>
+            <if test="goodsTypeName ! = null and goodsTypeName ! =''">
+                goods_type_name = #{goodsTypeName}
+            </if>
+        </trim>
+        WHERE
+        id = #{goodsTypeId}
+    </update>
+
+    <update id="delGoodsType">
+        UPDATE t_goods_type SET isdel=1,del_per = #{delPer} WHERE id = #{goodsTypeId}
+    </update>
+</mapper>
