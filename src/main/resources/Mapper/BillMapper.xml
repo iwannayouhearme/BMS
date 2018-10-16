@@ -33,10 +33,13 @@
         create_man_id,
         create_man_name,
         byear_month,
-        borrower_nike_name,
-        goods_name,
-        goods_id,
-        pay_source
+        borrower_nike_name
+        <if test="goodsName !=null">
+            ,goods_name
+        </if>
+        <if test="goodsId !=null">
+            ,goods_id
+        </if>
         )
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -57,7 +60,6 @@
             <if test="goodsId !=null">
                 #{goodsId},
             </if>
-            paySource
         </trim>
     </insert>
 
@@ -87,9 +89,9 @@
             isdel = 0
             <if test="yearMonth !=null and yearMonth !=''">AND byear_month = #{yearMonth}</if>
             <if test="bstatus !=null and bstatus !=''">AND bstatus = #{bstatus}</if>
-            <if test="userId != null and userId != ''">AND borrower_man_id = #{userId} </if>
+            <if test="userId != null and userId != ''">AND borrower_man_id = #{userId}</if>
         </trim>
-        ORDER BY borrower_man_id
+        ORDER BY bstatus ASC,borrower_man_id
     </select>
 
     <update id="delBill">
@@ -97,28 +99,28 @@
     </update>
 
     <update id="updateBill">
-       UPDATE
-          t_bill
-       <set>
-           <if test="borrowerManId !=null and borrowerManId != ''">
-               borrower_man_id = #{borrowerManId},
-               borrower_man = #{borrowerMan},
-           </if>
-           <if test="borrowerNikeName !=null and borrowerNikeName !=''">
-               borrower_nike_name = #{borrowerNikeName},
-           </if>
-           <if test="loanAmount !=null and loanAmount != ''">
-               loan_amount = #{loanAmount},
-           </if>
-           <if test="btype !=null and btype != ''">
-               btype = #{btype},
-           </if>
-           <if test="btype == 0">
-               goods_name = #{goodsName},
-               goods_id = #{goodsId},
-           </if>
-       </set>
-       WHERE id = #{billId}
+        UPDATE
+        t_bill
+        <set>
+            <if test="borrowerManId !=null and borrowerManId != ''">
+                borrower_man_id = #{borrowerManId},
+                borrower_man = #{borrowerMan},
+            </if>
+            <if test="borrowerNikeName !=null and borrowerNikeName !=''">
+                borrower_nike_name = #{borrowerNikeName},
+            </if>
+            <if test="loanAmount !=null and loanAmount != ''">
+                loan_amount = #{loanAmount},
+            </if>
+            <if test="btype !=null and btype != ''">
+                btype = #{btype},
+            </if>
+            <if test="btype == 0">
+                goods_name = #{goodsName},
+                goods_id = #{goodsId},
+            </if>
+        </set>
+        WHERE id = #{billId}
     </update>
 
     <update id="payForBill">
@@ -132,4 +134,7 @@
         WHERE id = #{billId}
     </update>
 
+    <select id="getBillById" resultMap="BillResult">
+        SELECT bstatus FROM t_bill WHERE id = #{billId} AND isdel = 0
+    </select>
 </mapper>

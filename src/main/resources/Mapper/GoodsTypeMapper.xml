@@ -17,7 +17,7 @@
     </insert>
 
     <select id="getAllGoodsType" resultMap="GoodsTypeResult">
-        SELECT * FROM t_goods_type WHERE isdel = 0
+        SELECT * FROM t_goods_type WHERE isdel = 0 ORDER BY rowid
     </select>
 
     <select id="getGoodsTypeById" resultMap="GoodsTypeResult">
@@ -28,9 +28,7 @@
         UPDATE
         t_goods_type
         <set>
-            <if test="goodsTypeName ! = null and goodsTypeName ! =''">
-                goods_type_name = #{goodsTypeName}
-            </if>
+            goods_type_name = #{goodsTypeName}
         </set>
         WHERE
         id = #{goodsTypeId}

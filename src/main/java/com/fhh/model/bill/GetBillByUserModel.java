@@ -2,6 +2,8 @@ package com.fhh.model.bill;
 
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 功能描述：（获取用户账单）
  *
@@ -13,6 +15,7 @@ public class GetBillByUserModel {
     /**
      * 账单所属年月
      */
+    @NotBlank(message = "年份月份不能为空！")
     private String yearMonth;
     /**
      * 还款状态

@@ -1,12 +1,14 @@
 package com.fhh.entity;
 
+import com.fhh.base.BaseEntity;
+
 /**
  * 功能描述：（商品实体类）
  *
  * @author: biubiubiu小浩
  * @date: 2018-10-12 14:48
  */
-public class GoodsModel {
+public class GoodsModel extends BaseEntity{
     /**
      * 商品名
      */

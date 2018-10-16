@@ -8,6 +8,7 @@ import com.fhh.service.GoodsTypeService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * @date 2018/10/15 21:37
  **/
 @Controller
+@Validated
 public class GoodsTypeController extends BaseController {
     @Autowired
     private GoodsTypeService goodsTypeService;

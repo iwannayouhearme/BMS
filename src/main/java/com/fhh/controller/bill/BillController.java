@@ -11,12 +11,14 @@ import com.fhh.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
 /**
@@ -26,6 +28,7 @@ import java.util.Map;
  * @date: 2018-10-11 19:34
  */
 @Controller
+@Validated
 public class BillController extends BaseController {
     @Autowired
     private BillService billService;
@@ -60,9 +63,66 @@ public class BillController extends BaseController {
     public String getBillByUser(HttpServletRequest request,
                                 HttpServletResponse response, @Valid GetBillByUserModel model, BindingResult result) throws BMSException {
         User user = this.getUserSession(request);
+        if (this.isNil(model.getUserId())) {
+            throw new BMSException("缺少用户信息参数！");
+        }
         Map<String, Object> billByUser = billService.getBillByUser(model, user);
         JSONObject jsonObject = JSONObject.parseObject(JSON.toJSONString(billByUser));
-        return this.poClient(response,jsonObject);
+        return this.poClient(response, jsonObject);
+    }
+
+    /**
+     * 获取首页数据接口
+     *
+     * @param
+     * @return
+     * @throws
+     * @author biubiubiu小浩
+     * @date 2018/10/16 9:56
+     **/
+    @GetMapping(value = "/bms/bill/getIndexPage")
+    public String getIndexPage(HttpServletRequest request, HttpServletResponse response, @Valid GetBillByUserModel model, BindingResult result) throws BMSException {
+        if (result.hasErrors()) {
+            return this.poClient(response, result.getFieldError().getDefaultMessage());
+        }
+        JSONObject indexBillData = billService.getIndexPage(model);
+        return this.poClient(response, indexBillData);
+    }
+
+    /**
+     * 删除账单
+     *
+     * @param request
+     * @param response
+     * @param billIds  账单id，多个账单id用逗号隔开
+     * @return
+     * @throws
+     * @author biubiubiu小浩
+     * @date 2018/10/16 17:04
+     **/
+    @PostMapping(value = "/bms/bill/delBill")
+    public String delBill(HttpServletRequest request, HttpServletResponse response, @NotBlank(message = "账单id不能为空！") String billIds) throws BMSException {
+        User user = this.getUserSession(request);
+        boolean flag = billService.delBill(user, billIds);
+        return this.poClient(response, flag);
+    }
+
+    /**
+     * 还款
+     *
+     * @param request
+     * @param response
+     * @param billIds  账单id，多个id用逗号隔开
+     * @return
+     * @throws BMSException
+     * @author biubiubiu小浩
+     * @date 2018/10/16 21:36
+     **/
+    @PostMapping(value = "/bms/bill/payForBill")
+    public String payForBill(HttpServletRequest request, HttpServletResponse response, @NotBlank(message = "账单编号不能为空！") String billIds) throws BMSException {
+        User user = this.getUserSession(request);
+        boolean flag = billService.payForBill(user, billIds);
+        return this.poClient(response, flag);
     }
 
 

@@ -71,10 +71,10 @@
         UPDATE t_goods SET isdel = 1,del_per = #{delPer} WHERE id = #{goodsId}
     </update>
 
-    <select id="getGoodsByGoodsTypeId" resultMap="GoodsResult">
+    <select id="getGoodsListByGoodsTypeId" resultMap="GoodsResult">
         SELECT
           id,
-          goods_name,
+          goods_name
         FROM
           t_goods
         WHERE

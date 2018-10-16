@@ -61,4 +61,13 @@ public interface BillDao {
      * @date 2018/10/14 13:22
      **/
     int payForBill(PayForBillModel model);
+
+    /**
+     * 根据账单id获取账单信息
+     * @author biubiubiu小浩
+     * @date 2018/10/16 21:46
+     * @param billId 账单id
+     * @return
+     **/
+    BillModel getBillById(@Param("billId") String billId);
 }

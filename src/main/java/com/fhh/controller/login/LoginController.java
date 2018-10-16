@@ -8,6 +8,7 @@ import com.fhh.util.CookiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2018/10/10 9:29
  **/
 @Controller
+@Validated
 public class LoginController extends BaseController {
     @Autowired
     private UserService userService;

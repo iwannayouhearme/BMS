@@ -58,5 +58,5 @@ public interface GoodsTypeDao {
      * @author biubiubiu小浩
      * @date 2018/10/12 17:22
      **/
-    int delGoodsType(@Param("goodsTypeId") String goodsTypeId, @Param("depPer") String delPer);
+    int delGoodsType(@Param("goodsTypeId") String goodsTypeId, @Param("delPer") String delPer);
 }
