@@ -25,7 +25,6 @@ public class AddBillModel {
     /**
      * 借款金额
      */
-    @Pattern(regexp = "^([1-9]\\d\\d\\d|[1-9]\\d\\d|[1-9]\\d|\\d)$", message = "请输入正确的借款金额！")
     private String loanAmount;
     /**
      * 借款类型（0商品，1现金）

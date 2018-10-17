@@ -103,7 +103,7 @@ public class GoodsController extends BaseController {
     public String delGoods(HttpServletRequest request,
                            HttpServletResponse response, @NotBlank(message = "要删除的id不能为空！") String goodsIds) throws BMSException {
         User user = this.getUserSession(request);
-        goodsService.delGoods(goodsIds, user);
-        return this.poClient(response, true);
+        boolean flag = goodsService.delGoods(goodsIds, user);
+        return this.poClient(response, flag);
     }
 }

@@ -12,6 +12,7 @@ import com.fhh.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -68,6 +69,11 @@ public class GoodsTypeServiceImpl extends BaseService implements GoodsTypeServic
         boolean flag = judgeHasPower(user);
         if (!flag) {
             throw new BMSException("无权限用户操作！");
+        }
+        //判断前端传入的值是否正确
+        GoodsTypeModel goodsTypeById = goodsTypeDao.getGoodsTypeById("0", goodsTypeId);
+        if (ObjectUtils.isEmpty(goodsTypeById)){
+            throw new BMSException("存在错误参数！");
         }
         //根据商品类别id查询该类别下有没有关联商品
         List<GoodsModel> goodsList = goodsDao.getGoodsListByGoodsTypeId(goodsTypeId);

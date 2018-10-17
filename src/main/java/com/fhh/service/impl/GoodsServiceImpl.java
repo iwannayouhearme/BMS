@@ -54,6 +54,10 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
         if (!flag) {
             throw new BMSException("无权限用户操作！");
         }
+        if (this.isNil(model.getGoodsId())){
+            throw new BMSException("商品id不能为空！");
+        }
+        model.setFullPinyin(ChineseUtil.getPingYin(model.getGoodsName()));
         int updateGoodsById = goodsDao.updateGoodsById(model);
         if (updateGoodsById < 1) {
             throw new BMSException("更新商品失败，请联系管理员处理！");
@@ -75,6 +79,6 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
                 throw new BMSException("删除商品失败，请联系管理员处理！");
             }
         }
-        return false;
+        return true;
     }
 }

@@ -91,7 +91,7 @@
             <if test="bstatus !=null and bstatus !=''">AND bstatus = #{bstatus}</if>
             <if test="userId != null and userId != ''">AND borrower_man_id = #{userId}</if>
         </trim>
-        ORDER BY bstatus ASC,borrower_man_id
+        ORDER BY bstatus ASC,borrower_man_id,rowid ASC
     </select>
 
     <update id="delBill">

@@ -6,7 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.fhh.base.BaseService;
 import com.fhh.constant.BillConstant;
 import com.fhh.dao.BillDao;
+import com.fhh.dao.GoodsDao;
 import com.fhh.entity.BillModel;
+import com.fhh.entity.GoodsModel;
 import com.fhh.entity.User;
 import com.fhh.exception.BMSException;
 import com.fhh.model.bill.AddBillModel;
@@ -21,6 +23,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 功能描述：（）
@@ -32,6 +36,8 @@ import java.util.*;
 public class BillServiceImpl extends BaseService implements BillService {
     @Autowired
     private BillDao billDao;
+    @Autowired
+    private GoodsDao goodsDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -40,13 +46,33 @@ public class BillServiceImpl extends BaseService implements BillService {
         if (!this.judgeHasPower(user)) {
             throw new BMSException("无权限用户操作！");
         }
+        //生成uuid
         model.setUuId(DataUtil.getUUid());
+        //账单创建人id（既当前操作用户）
         model.setCreateManId(user.getId());
         model.setCreateManName(user.getRealName());
         User borrowerMan = this.getUserInfo(model.getBorrowerManId());
         model.setBorrowerMan(borrowerMan.getRealName());
         model.setBorrowerNikeName(borrowerMan.getNickName());
         model.setYearMonth(new SimpleDateFormat("YYYY-MM").format(new Date()).toString());
+        //如果借款类型为商品，那么只传商品id
+        if (BillConstant.Btype.GOODS.equals(model.getBtype())){
+            if (this.isNil(model.getGoodsId())){
+                throw new BMSException("缺少必要参数！");
+            }
+            List<GoodsModel> goodsInfo = goodsDao.getGoods(model.getGoodsId(), "0");
+            if (goodsInfo.isEmpty()){
+                throw new BMSException("错误的参数！");
+            }
+            model.setGoodsName(goodsInfo.get(0).getGoodsName());
+            model.setLoanAmount(goodsInfo.get(0).getGoodsPrice());
+        }else {
+            //如果为现金支付，则需要对金额进行校验
+            boolean matches = Pattern.matches("^([1-9]\\d\\d\\d|[1-9]\\d\\d|[1-9]\\d|\\d)$", model.getLoanAmount());
+            if (!matches){
+                throw new BMSException("请输入1-9999的金额！");
+            }
+        }
         int addBill = billDao.addBill(model);
         if (addBill < 1) {
             throw new BMSException("新建账单失败，请联系管理员处理！");
@@ -153,6 +179,14 @@ public class BillServiceImpl extends BaseService implements BillService {
         }
         String[] billArray = billIds.split(",");
         for (String billId:billArray){
+            //查询是否存在这个账单,并且已经结账的账单是不允许删除的
+            BillModel billById = billDao.getBillById(billId);
+            if (ObjectUtils.isEmpty(billById)){
+                throw new BMSException("错误的参数！");
+            }
+            if (BillConstant.Bstatus.HASPAY.equals(billById.getBstatus())){
+                throw new BMSException("已完成的账单不允许删除！");
+            }
             int delBill = billDao.delBill(user.getId(), billId);
             if (delBill<1){
                 throw new BMSException("删除账单失败，请联系管理员处理！");

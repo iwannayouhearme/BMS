@@ -93,6 +93,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean delUserById(User user, String delPerId) throws BMSException {
+        //判断当前用户是否有为结账的账单，如果存在未结账的账单，则不允许删除
+        GetBillByUserModel getBillByUserModel = new GetBillByUserModel();
+        getBillByUserModel.setUserId(delPerId);
+        getBillByUserModel.setBstatus("0");
+        List<BillModel> billByUser = billDao.getBillByUser(getBillByUserModel);
+        if (!billByUser.isEmpty()){
+            throw new BMSException("该用户存在未付款的账单，不可删除！");
+        }
         int delUser = userDao.delUser(user.getId(), delPerId);
         if (delUser < 1) {
             throw new BMSException("删除用户失败，请联系管理员处理！");

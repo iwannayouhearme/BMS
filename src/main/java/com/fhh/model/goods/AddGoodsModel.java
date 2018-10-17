@@ -27,7 +27,7 @@ public class AddGoodsModel {
     /**
      * 商品价格
      */
-    @Pattern(regexp = "^([1-9]\\d\\d\\d|[1-9]\\d\\d|[1-9]\\d|\\d)$", message = "请输入1-9999的价格！")
+    @Pattern(regexp = "^([1-9]\\d\\d\\d|[1-9]\\d\\d|[1-9]\\d|[1-9])$", message = "请输入1-9999的价格！")
     private String goodsPrice;
     @NotBlank(message = "请选择商品的类型！")
     private String goodsTypeId;
