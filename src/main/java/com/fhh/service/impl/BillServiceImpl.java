@@ -56,20 +56,20 @@ public class BillServiceImpl extends BaseService implements BillService {
         model.setBorrowerNikeName(borrowerMan.getNickName());
         model.setYearMonth(new SimpleDateFormat("YYYY-MM").format(new Date()).toString());
         //如果借款类型为商品，那么只传商品id
-        if (BillConstant.Btype.GOODS.equals(model.getBtype())){
-            if (this.isNil(model.getGoodsId())){
+        if (BillConstant.Btype.GOODS.equals(model.getBtype())) {
+            if (this.isNil(model.getGoodsId())) {
                 throw new BMSException("缺少必要参数！");
             }
             List<GoodsModel> goodsInfo = goodsDao.getGoods(model.getGoodsId(), "0");
-            if (goodsInfo.isEmpty()){
+            if (goodsInfo.isEmpty()) {
                 throw new BMSException("错误的参数！");
             }
             model.setGoodsName(goodsInfo.get(0).getGoodsName());
             model.setLoanAmount(goodsInfo.get(0).getGoodsPrice());
-        }else {
+        } else {
             //如果为现金支付，则需要对金额进行校验
             boolean matches = Pattern.matches("^([1-9]\\d\\d\\d|[1-9]\\d\\d|[1-9]\\d|\\d)$", model.getLoanAmount());
-            if (!matches){
+            if (!matches) {
                 throw new BMSException("请输入1-9999的金额！");
             }
         }
@@ -84,10 +84,10 @@ public class BillServiceImpl extends BaseService implements BillService {
     public Map<String, Object> getBillByUser(GetBillByUserModel model, User user) throws BMSException {
         Map<String, Object> data = new HashMap<>(16);
         List<BillModel> billModelList = billDao.getBillByUser(model);
-        Map<String, String> totalMoney = getTotalMoney(billModelList);
-        data.put("totalMoney", totalMoney.get("totalMoney"));
-        data.put("totalPaymoney", totalMoney.get("totalPaymoney"));
-        data.put("totalUnpayMoney", totalMoney.get("totalUnpayMoney"));
+//        Map<String, String> totalMoney = getTotalMoney(billModelList);
+//        data.put("totalMoney", totalMoney.get("totalMoney"));
+//        data.put("totalPaymoney", totalMoney.get("totalPaymoney"));
+//        data.put("totalUnpayMoney", totalMoney.get("totalUnpayMoney"));
         data.put("billList", JSONArray.parseArray(JSON.toJSONString(billModelList)));
         return data;
     }
@@ -145,28 +145,31 @@ public class BillServiceImpl extends BaseService implements BillService {
         result.put("totalUnpayMoney", totalMoney.get("totalUnpayMoney"));
         //查询所有用户，查询这些用户下是否有账单，有账单显示出来，没有账单的不显示在主页
         //用于记录用户信息
-        List<Map<String,String >> userBillInfoListMap = new ArrayList<>();
+        List<Map<String, Object>> userBillInfoListMap = new ArrayList<>();
         List<User> userList = userDao.getUserList();
         for (User userModel : userList) {
-            Map<String ,String > userBillInfoMap = new HashMap<>(16);
+            Map<String, Object> userBillInfoMap = new HashMap<>(16);
             GetBillByUserModel getBillModel = new GetBillByUserModel();
             getBillModel.setUserId(userModel.getId());
             getBillModel.setBstatus(model.getBstatus());
             getBillModel.setYearMonth(model.getYearMonth());
             List<BillModel> billList = billDao.getBillByUser(getBillModel);
-            if (!billList.isEmpty()){
+            if (!billList.isEmpty()) {
                 //获取每个人的账单总金额
                 Map<String, String> userTotalMoney = getTotalMoney(billList);
                 userBillInfoMap.put("totalUserMoney", userTotalMoney.get("totalMoney"));
                 userBillInfoMap.put("totalUserPaymoney", userTotalMoney.get("totalPaymoney"));
                 userBillInfoMap.put("totalUserUnpayMoney", userTotalMoney.get("totalUnpayMoney"));
-                userBillInfoMap.put("userRealName",userModel.getRealName());
-                userBillInfoMap.put("userNickName",userModel.getNickName());
-                userBillInfoMap.put("userId",userModel.getId());
+                userBillInfoMap.put("userRealName", userModel.getRealName());
+                userBillInfoMap.put("userNickName", userModel.getNickName());
+                userBillInfoMap.put("userId", userModel.getId());
+                userBillInfoMap.put("countNumber", billList.size() + "");
+                //放入每个人的账单详情
+                userBillInfoMap.put("detailList", billList);
                 userBillInfoListMap.add(userBillInfoMap);
             }
         }
-        result.put("userBillList",userBillInfoListMap);
+        result.put("userBillList", userBillInfoListMap);
         return result;
     }
 
@@ -174,21 +177,21 @@ public class BillServiceImpl extends BaseService implements BillService {
     @Transactional(rollbackFor = Exception.class)
     public boolean delBill(User user, String billIds) throws BMSException {
         boolean flag = judgeHasPower(user);
-        if (!flag){
+        if (!flag) {
             throw new BMSException("无权限用户操作！");
         }
         String[] billArray = billIds.split(",");
-        for (String billId:billArray){
+        for (String billId : billArray) {
             //查询是否存在这个账单,并且已经结账的账单是不允许删除的
             BillModel billById = billDao.getBillById(billId);
-            if (ObjectUtils.isEmpty(billById)){
+            if (ObjectUtils.isEmpty(billById)) {
                 throw new BMSException("错误的参数！");
             }
-            if (BillConstant.Bstatus.HASPAY.equals(billById.getBstatus())){
+            if (BillConstant.Bstatus.HASPAY.equals(billById.getBstatus())) {
                 throw new BMSException("已完成的账单不允许删除！");
             }
             int delBill = billDao.delBill(user.getId(), billId);
-            if (delBill<1){
+            if (delBill < 1) {
                 throw new BMSException("删除账单失败，请联系管理员处理！");
             }
         }
@@ -199,31 +202,47 @@ public class BillServiceImpl extends BaseService implements BillService {
     @Transactional(rollbackFor = Exception.class)
     public boolean payForBill(User user, String billIds) throws BMSException {
         boolean flag = judgeHasPower(user);
-        if (!flag){
+        if (!flag) {
             throw new BMSException("无权限用户操作！");
         }
         //如果当前账单已经还款了则不允许重复操作
         String[] billIdsArray = billIds.split(",");
-        for (String billId:billIdsArray){
+        for (String billId : billIdsArray) {
             BillModel billModel = billDao.getBillById(billId);
-            if (ObjectUtils.isEmpty(billModel)){
+            if (ObjectUtils.isEmpty(billModel)) {
                 throw new BMSException("存在错误参数");
             }
-            if (BillConstant.Bstatus.HASPAY.equals(billModel.getBstatus())){
+            if (BillConstant.Bstatus.HASPAY.equals(billModel.getBstatus())) {
                 throw new BMSException("该账单已经结账了，请勿重复操作！");
             }
             PayForBillModel payForBillModel = new PayForBillModel();
             payForBillModel.setBillId(billId);
-            payForBillModel.setPayDate(new SimpleDateFormat("YYYY-MM-dd mm:HH:ss").format(new Date()));
+            payForBillModel.setPayDate(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(new Date()));
             //目前写死为现金还款  后期有需求再做优化
             //TODO
             payForBillModel.setPaySource("0");
             payForBillModel.setUserId(user.getId());
             int payForBill = billDao.payForBill(payForBillModel);
-            if (payForBill<1){
+            if (payForBill < 1) {
                 throw new BMSException("还款失败，请联系管理员处理！");
             }
         }
         return true;
+    }
+
+    @Override
+    public JSONObject getBillById(String billId) throws BMSException {
+        BillModel billInfoModel = billDao.getBillById(billId);
+        if (ObjectUtils.isEmpty(billInfoModel)) {
+            throw new BMSException("错误的参数！");
+        }
+        JSONObject billInfo = JSONObject.parseObject(JSON.toJSONString(billInfoModel));
+        if (this.isNil(billInfoModel.getPayOpeManId())) {
+            billInfo.put("payOpeMan", "无");
+        }else {
+            billInfo.put("payOpeMan", this.getUserInfo(billInfoModel.getPayOpeManId()).getRealName());
+        }
+        billInfo.put("create_time",billInfoModel.getCreate_time().substring(0,billInfoModel.getCreate_time().length()-2));
+        return billInfo;
     }
 }

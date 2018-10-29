@@ -68,4 +68,13 @@ public interface BillService {
      * @throws
      **/
     boolean payForBill(User user, String billIds) throws BMSException;
+    /**
+     * 根据账单id获取账单详情
+     * @author biubiubiu小浩
+     * @date 2018/10/25 15:59
+     * @param billId 账单id
+     * @return
+     * @throws BMSException
+     **/
+    JSONObject getBillById(String billId) throws BMSException;
 }

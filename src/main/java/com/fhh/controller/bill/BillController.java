@@ -125,5 +125,18 @@ public class BillController extends BaseController {
         return this.poClient(response, flag);
     }
 
+    /**
+     *  根据账单id获取账单详情
+     * @author biubiubiu小浩
+     * @date 2018/10/25 16:07
+     * @param billId 账单id
+     * @return
+     * @throws
+     **/
+    @GetMapping(value = "/bms/bill/getBillById")
+    public String getBillById(HttpServletRequest request, HttpServletResponse response, @NotBlank(message = "账单编号不能为空！") String billId) throws BMSException {
+        JSONObject billById = billService.getBillById(billId);
+        return this.poClient(response,billById);
+    }
 
 }

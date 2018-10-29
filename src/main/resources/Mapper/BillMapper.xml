@@ -135,6 +135,24 @@
     </update>
 
     <select id="getBillById" resultMap="BillResult">
-        SELECT bstatus FROM t_bill WHERE id = #{billId} AND isdel = 0
+        SELECT
+            bstatus,
+            borrower_man_id,
+            borrower_man,
+            borrower_nike_name,
+            btype,
+            create_man_id,
+            create_man_name,
+            create_time,
+            goods_id,
+            id,
+            goods_name,
+            loan_amount,
+            pay_date,
+            pay_ope_man_id
+        FROM
+          t_bill
+        WHERE
+          id = #{billId} AND isdel = 0
     </select>
 </mapper>

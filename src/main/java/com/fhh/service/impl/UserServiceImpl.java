@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
         if (!ObjectUtils.isEmpty(user)) {
             String token = user.getId();
             //写入cookie token信息，设置过期时间为6000秒
-            CookiesUtil.setCookie(response, UserConstant.RedisConstant.TOKEN, token, 6000);
-            stringRedisTemplate.opsForValue().set(UserConstant.RedisConstant.LOGINTOKEN + token, token, 6000, TimeUnit.SECONDS);
+            CookiesUtil.setCookie(response, UserConstant.RedisConstant.TOKEN, token, 5*365*24*60*60);
+            stringRedisTemplate.opsForValue().set(UserConstant.RedisConstant.LOGINTOKEN + token, token);
             stringRedisTemplate.opsForValue().set(UserConstant.RedisConstant.USERINFO + user.getId(), JSON.toJSONString(user));
         } else {
             throw new BMSException("账号或密码错误！");
