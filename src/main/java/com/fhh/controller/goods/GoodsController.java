@@ -101,9 +101,23 @@ public class GoodsController extends BaseController {
      **/
     @PostMapping(value = "/bms/goods/delGoods")
     public String delGoods(HttpServletRequest request,
-                           HttpServletResponse response, @NotBlank(message = "要删除的id不能为空！") String goodsIds) throws BMSException {
+                           HttpServletResponse response, @NotBlank(message = "需要删除的id不能为空！") String goodsIds) throws BMSException {
         User user = this.getUserSession(request);
         boolean flag = goodsService.delGoods(goodsIds, user);
         return this.poClient(response, flag);
+    }
+
+
+    /**
+     * 根据商品类别id获取所有商品
+     * @param goodsTypeId 商品类别id
+     * @return
+     * @author biubiubiu小浩
+     * @date 2018/10/30 12:38
+     **/
+    @GetMapping(value = "/bms/goods/getGoodsListByGoodsTypeId")
+    public String getGoodsListByGoodsTypeId(HttpServletResponse response, @NotBlank(message = "商品类别id不能为空！") String goodsTypeId) {
+        List<GoodsModel> goodsListByGoodsTypeId = goodsService.getGoodsListByGoodsTypeId(goodsTypeId);
+        return this.poClient(response, goodsListByGoodsTypeId);
     }
 }

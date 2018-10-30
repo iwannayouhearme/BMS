@@ -81,4 +81,10 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
         }
         return true;
     }
+
+    @Override
+    public List<GoodsModel> getGoodsListByGoodsTypeId(String goodsTypeId) {
+        List<GoodsModel> goodsList = goodsDao.getGoodsListByGoodsTypeId(goodsTypeId);
+        return goodsList;
+    }
 }

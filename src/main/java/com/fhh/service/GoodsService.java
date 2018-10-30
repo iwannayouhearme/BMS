@@ -56,4 +56,14 @@ public interface GoodsService {
      * @throws
      **/
     boolean delGoods(String goodsIds,User user) throws BMSException;
+
+    /**
+     * 根据商品类别id获取商品
+     * @author biubiubiu小浩
+     * @date 2018/10/30 12:36
+     * @param goodsTypeId 商品类别id
+     * @return
+     * @throws
+     **/
+    List<GoodsModel> getGoodsListByGoodsTypeId(String goodsTypeId);
 }
