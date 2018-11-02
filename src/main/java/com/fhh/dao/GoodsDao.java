@@ -14,38 +14,42 @@ import java.util.List;
  */
 public interface GoodsDao {
     /**
+     * 添加商品
+     *
      * @param model
      * @return
-     * @description 添加商品
      * @author biubiubiu小浩
      * @date 2018/10/13 22:13
      **/
     int addGoods(AddGoodsModel model);
 
     /**
+     * 更新商品
+     *
      * @param model
      * @return
-     * @description 更新商品
      * @author biubiubiu小浩
      * @date 2018/10/13 22:15
      **/
     int updateGoodsById(AddGoodsModel model);
 
     /**
+     * 获取商品
+     *
      * @param goodsId 商品id  不传查全部
      * @param isdel   删除标记
      * @return
-     * @description 获取商品
      * @author biubiubiu小浩
      * @date 2018/10/13 22:17
      **/
     List<GoodsModel> getGoods(@Param("goodsId") String goodsId, @Param("isdel") String isdel);
 
     /**
+     * 删除商品
+     *
      * @param goodsId 商品id
      * @param delPer  删除人id
      * @return
-     * @description 删除商品
      * @author biubiubiu小浩
      * @date 2018/10/13 22:18
      **/
@@ -53,10 +57,21 @@ public interface GoodsDao {
 
     /**
      * 根据商品类别id查询商品
+     *
      * @param goodsTypeId 商品类别id
      * @return
      * @author biubiubiu小浩
      * @date 2018/10/15 17:44
      **/
     List<GoodsModel> getGoodsListByGoodsTypeId(@Param("goodsTypeId") String goodsTypeId);
+
+    /**
+     * 根据商品id获取商品内容
+     *
+     * @param goodsId
+     * @return
+     * @author biubiubiu小浩
+     * @date 2018/11/2 15:01
+     **/
+    GoodsModel getGoodsById(@Param("goodsId") String goodsId);
 }

@@ -54,7 +54,7 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
         if (!flag) {
             throw new BMSException("无权限用户操作！");
         }
-        if (this.isNil(model.getGoodsId())){
+        if (this.isNil(model.getGoodsId())) {
             throw new BMSException("商品id不能为空！");
         }
         model.setFullPinyin(ChineseUtil.getPingYin(model.getGoodsName()));
@@ -86,5 +86,11 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
     public List<GoodsModel> getGoodsListByGoodsTypeId(String goodsTypeId) {
         List<GoodsModel> goodsList = goodsDao.getGoodsListByGoodsTypeId(goodsTypeId);
         return goodsList;
+    }
+
+    @Override
+    public GoodsModel getGoodsInfoById(String goodsId) {
+        GoodsModel goodsInfo = goodsDao.getGoodsById(goodsId);
+        return goodsInfo;
     }
 }

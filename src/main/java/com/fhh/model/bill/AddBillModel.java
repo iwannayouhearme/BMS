@@ -40,7 +40,7 @@ public class AddBillModel {
      */
     private String createManId;
     /**
-     * 放款人id
+     * 放款人名
      */
     private String createManName;
     /**

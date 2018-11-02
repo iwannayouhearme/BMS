@@ -7,6 +7,7 @@
         <result column="goods_price" property="goodsPrice"/>
         <result column="goods_type_id" property="goodsTypeId"/>
         <result column="full_pinyin" property="fullPinyin"/>
+        <result column="goods_type_name" property="goodsTypeName"/>
     </resultMap>
 
     <insert id="addGoods">
@@ -28,42 +29,42 @@
     </insert>
 
     <update id="updateGoodsById">
-      UPDATE
+        UPDATE
         t_goods
-      <set>
-          <if test="goodsName !=null and goodsName != ''">
-              goods_name = #{goodsName},
-          </if>
-          <if test="goodsPrice !=null and goodsPrice != ''">
-              goods_price = #{goodsPrice},
-          </if>
-          <if test="goodsTypeId !=null and goodsTypeId != ''">
-              goods_type_id = #{goodsTypeId},
-          </if>
-          <if test="fullPinyin !=null and fullPinyin != ''">
-              full_pinyin = #{fullPinyin},
-          </if>
-      </set>
-      WHERE id = #{goodsId}
+        <set>
+            <if test="goodsName !=null and goodsName != ''">
+                goods_name = #{goodsName},
+            </if>
+            <if test="goodsPrice !=null and goodsPrice != ''">
+                goods_price = #{goodsPrice},
+            </if>
+            <if test="goodsTypeId !=null and goodsTypeId != ''">
+                goods_type_id = #{goodsTypeId},
+            </if>
+            <if test="fullPinyin !=null and fullPinyin != ''">
+                full_pinyin = #{fullPinyin},
+            </if>
+        </set>
+        WHERE id = #{goodsId}
     </update>
 
     <select id="getGoods" resultMap="GoodsResult">
-      SELECT
+        SELECT
         id,
         rowid,
         goods_name,
         goods_price,
         goods_type_id,
         full_pinyin
-      FROM
+        FROM
         t_goods
-      WHERE
-      <trim>
-          isdel = #{isdel}
-          <if test="goodsId !=null and goodsId !=''">
-              AND id = #{goodsId}
-          </if>
-      </trim>
+        WHERE
+        <trim>
+            isdel = #{isdel}
+            <if test="goodsId !=null and goodsId !=''">
+                AND id = #{goodsId}
+            </if>
+        </trim>
         ORDER BY rowid ASC
     </select>
 
@@ -74,10 +75,28 @@
     <select id="getGoodsListByGoodsTypeId" resultMap="GoodsResult">
         SELECT
           id,
-          goods_name
+          goods_name,
+          goods_price
         FROM
           t_goods
         WHERE
           isdel = 0 AND goods_type_id = #{goodsTypeId}
+    </select>
+
+    <select id="getGoodsById" resultMap="GoodsResult">
+        SELECT
+          a.id,
+          a.goods_name,
+          a.full_pinyin,
+          a.goods_type_id,
+          b.goods_type_name
+        FROM
+          t_goods AS a
+        LEFT JOIN
+          t_goods_type AS b
+        ON a.goods_type_id = b.id
+        WHERE
+          a.isdel = 0 AND b.isdel = 0
+          AND a.id = #{goodsId}
     </select>
 </mapper>

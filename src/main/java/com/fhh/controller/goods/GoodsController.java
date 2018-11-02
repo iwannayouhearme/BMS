@@ -1,5 +1,6 @@
 package com.fhh.controller.goods;
 
+import com.alibaba.fastjson.JSON;
 import com.fhh.base.BaseController;
 import com.fhh.entity.GoodsModel;
 import com.fhh.entity.User;
@@ -110,6 +111,7 @@ public class GoodsController extends BaseController {
 
     /**
      * 根据商品类别id获取所有商品
+     *
      * @param goodsTypeId 商品类别id
      * @return
      * @author biubiubiu小浩
@@ -119,5 +121,18 @@ public class GoodsController extends BaseController {
     public String getGoodsListByGoodsTypeId(HttpServletResponse response, @NotBlank(message = "商品类别id不能为空！") String goodsTypeId) {
         List<GoodsModel> goodsListByGoodsTypeId = goodsService.getGoodsListByGoodsTypeId(goodsTypeId);
         return this.poClient(response, goodsListByGoodsTypeId);
+    }
+
+    /**
+     * 根据商品id获取商品信息
+     *
+     * @param goodsId 商品id
+     * @return
+     * @author biubiubiu小浩
+     * @date 2018/11/2 15:18
+     **/
+    @GetMapping(value = "/bms/goods/getGoodsInfoById")
+    public String getGoodsInfoById(HttpServletResponse response, @NotBlank(message = "商品id不能为空！") String goodsId) {
+        return this.poClient(response, JSON.parseObject(JSON.toJSONString(goodsService.getGoodsInfoById(goodsId))));
     }
 }

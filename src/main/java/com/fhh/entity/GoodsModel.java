@@ -8,7 +8,7 @@ import com.fhh.base.BaseEntity;
  * @author: biubiubiu小浩
  * @date: 2018-10-12 14:48
  */
-public class GoodsModel extends BaseEntity{
+public class GoodsModel extends BaseEntity {
     /**
      * 商品名
      */
@@ -25,6 +25,18 @@ public class GoodsModel extends BaseEntity{
      * 全拼
      */
     private String fullPinyin;
+    /**
+     * 商品类别名称
+     */
+    private String goodsTypeName;
+
+    public String getGoodsTypeName() {
+        return goodsTypeName;
+    }
+
+    public void setGoodsTypeName(String goodsTypeName) {
+        this.goodsTypeName = goodsTypeName;
+    }
 
     public String getGoodsName() {
         return goodsName;

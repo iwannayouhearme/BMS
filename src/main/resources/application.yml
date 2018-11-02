@@ -4,16 +4,16 @@ spring:
   datasource:
     username: root
     url: jdbc:mysql://127.0.0.1:3306/bms
-    password: root
+    password: ly961219
     driver-class-name: com.mysql.jdbc.Driver
   redis:
     host: 127.0.0.1
     port: 6379
     password: redis
 server:
-  port: 8081
+  port: 9090
 mybatis:
   mapper-locations: classpath:Mapper/*.xml
   type-aliases-package: com.fhh.entity
-
-lb: 123
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
