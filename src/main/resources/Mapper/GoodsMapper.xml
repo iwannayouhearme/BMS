@@ -89,6 +89,8 @@
           a.goods_name,
           a.full_pinyin,
           a.goods_type_id,
+          a.goods_price,
+          a.create_time,
           b.goods_type_name
         FROM
           t_goods AS a

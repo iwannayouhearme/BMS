@@ -91,6 +91,7 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
     @Override
     public GoodsModel getGoodsInfoById(String goodsId) {
         GoodsModel goodsInfo = goodsDao.getGoodsById(goodsId);
+        goodsInfo.setCreate_time(goodsInfo.getCreate_time().substring(0,goodsInfo.getCreate_time().length()-2));
         return goodsInfo;
     }
 }
