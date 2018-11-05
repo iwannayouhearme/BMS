@@ -65,6 +65,30 @@ public class BillModel extends BaseEntity {
      * 还款方式（0现金 1支付宝 2微信）
      */
     private String paySource;
+    /**
+     * 商品类型id
+     */
+    private String goodsTypeId;
+    /**
+     * 商品类别名称
+     */
+    private String goodsTypeName;
+
+    public String getGoodsTypeId() {
+        return goodsTypeId;
+    }
+
+    public void setGoodsTypeId(String goodsTypeId) {
+        this.goodsTypeId = goodsTypeId;
+    }
+
+    public String getGoodsTypeName() {
+        return goodsTypeName;
+    }
+
+    public void setGoodsTypeName(String goodsTypeName) {
+        this.goodsTypeName = goodsTypeName;
+    }
 
     public String getPayDate() {
         return payDate;

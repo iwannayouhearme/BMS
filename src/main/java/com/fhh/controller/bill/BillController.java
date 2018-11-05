@@ -7,6 +7,7 @@ import com.fhh.entity.User;
 import com.fhh.exception.BMSException;
 import com.fhh.model.bill.AddBillModel;
 import com.fhh.model.bill.GetBillByUserModel;
+import com.fhh.model.bill.UpdateBillModel;
 import com.fhh.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -126,17 +127,37 @@ public class BillController extends BaseController {
     }
 
     /**
-     *  根据账单id获取账单详情
-     * @author biubiubiu小浩
-     * @date 2018/10/25 16:07
+     * 根据账单id获取账单详情
+     *
      * @param billId 账单id
      * @return
      * @throws
+     * @author biubiubiu小浩
+     * @date 2018/10/25 16:07
      **/
     @GetMapping(value = "/bms/bill/getBillById")
     public String getBillById(HttpServletRequest request, HttpServletResponse response, @NotBlank(message = "账单编号不能为空！") String billId) throws BMSException {
         JSONObject billById = billService.getBillById(billId);
-        return this.poClient(response,billById);
+        return this.poClient(response, billById);
     }
 
+    /**
+     * 更新账单
+     *
+     * @param updateBillModel 更新账单模型
+     * @return
+     * @throws BMSException
+     * @author biubiubiu小浩
+     * @date 2018/11/5 13:56
+     **/
+    @PostMapping(value = "/bms/bill/updateBill")
+    public String updateBill(HttpServletRequest request, HttpServletResponse response, @Valid UpdateBillModel updateBillModel, BindingResult result) throws BMSException {
+        if (result.hasErrors()) {
+            return this.poClient(response, result.getFieldError().getDefaultMessage());
+        }
+        User userModel = this.getUserSession(request);
+        updateBillModel.setUserModel(userModel);
+        boolean updateBill = billService.updateBill(updateBillModel);
+        return this.poClient(response, updateBill);
+    }
 }

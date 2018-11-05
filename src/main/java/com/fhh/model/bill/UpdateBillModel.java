@@ -1,5 +1,6 @@
 package com.fhh.model.bill;
 
+import com.fhh.entity.User;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Pattern;
@@ -29,11 +30,35 @@ public class UpdateBillModel {
      */
     @Pattern(regexp = "^([1-9]\\d\\d\\d|[1-9]\\d\\d|[1-9]\\d|\\d)$", message = "请输入正确的借款金额！")
     private String loanAmount;
+    /**
+     * 借款类型
+     */
     @Pattern(regexp = "^[0-1]$", message = "请输入正确的借款类型！")
     private String btype;
+    /**
+     * 商品名称
+     */
     private String goodsName;
+    /**
+     * 商品id
+     */
     private String goodsId;
+    /**
+     * 账单id
+     */
     private String billId;
+    /**
+     * 用户模型
+     */
+    private User userModel;
+
+    public User getUserModel() {
+        return userModel;
+    }
+
+    public void setUserModel(User userModel) {
+        this.userModel = userModel;
+    }
 
     public String getBorrowerManId() {
         return borrowerManId;

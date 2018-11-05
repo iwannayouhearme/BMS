@@ -14,6 +14,7 @@ import com.fhh.exception.BMSException;
 import com.fhh.model.bill.AddBillModel;
 import com.fhh.model.bill.GetBillByUserModel;
 import com.fhh.model.bill.PayForBillModel;
+import com.fhh.model.bill.UpdateBillModel;
 import com.fhh.service.BillService;
 import com.fhh.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -239,10 +241,30 @@ public class BillServiceImpl extends BaseService implements BillService {
         JSONObject billInfo = JSONObject.parseObject(JSON.toJSONString(billInfoModel));
         if (this.isNil(billInfoModel.getPayOpeManId())) {
             billInfo.put("payOpeMan", "无");
-        }else {
+        } else {
             billInfo.put("payOpeMan", this.getUserInfo(billInfoModel.getPayOpeManId()).getRealName());
         }
-        billInfo.put("create_time",billInfoModel.getCreate_time().substring(0,billInfoModel.getCreate_time().length()-2));
+        billInfo.put("create_time", billInfoModel.getCreate_time().substring(0, billInfoModel.getCreate_time().length() - 2));
+        //查询商品所属类别id和类别名称
+        GoodsModel goodsModel = goodsDao.getGoodsById(billInfoModel.getGoodsId());
+        if ("0".equals(billInfoModel.getBtype())) {
+            billInfo.put("goodsTypeId", goodsModel.getGoodsTypeId());
+            billInfo.put("goodsTypeName", goodsModel.getGoodsTypeName());
+        }
         return billInfo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateBill(@Valid UpdateBillModel updateBillModel) throws BMSException {
+        boolean flag = judgeHasPower(updateBillModel.getUserModel());
+        if (!flag) {
+            throw new BMSException("无权限用户操作！");
+        }
+        int updateBill = billDao.updateBill(updateBillModel);
+        if (updateBill < 1) {
+            throw new BMSException("更新账单失败，请联系管理员处理！");
+        }
+        return true;
     }
 }

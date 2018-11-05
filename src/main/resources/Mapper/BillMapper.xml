@@ -119,6 +119,10 @@
                 goods_name = #{goodsName},
                 goods_id = #{goodsId},
             </if>
+            <if test="btype == 1">
+                goods_name = '',
+                goods_id = '',
+            </if>
         </set>
         WHERE id = #{billId}
     </update>
