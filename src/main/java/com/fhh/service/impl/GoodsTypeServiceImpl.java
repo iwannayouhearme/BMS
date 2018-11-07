@@ -72,18 +72,26 @@ public class GoodsTypeServiceImpl extends BaseService implements GoodsTypeServic
         }
         //判断前端传入的值是否正确
         GoodsTypeModel goodsTypeById = goodsTypeDao.getGoodsTypeById("0", goodsTypeId);
-        if (ObjectUtils.isEmpty(goodsTypeById)){
+        if (ObjectUtils.isEmpty(goodsTypeById)) {
             throw new BMSException("存在错误参数！");
         }
         //根据商品类别id查询该类别下有没有关联商品
         List<GoodsModel> goodsList = goodsDao.getGoodsListByGoodsTypeId(goodsTypeId);
-        if (!goodsList.isEmpty()){
+        if (!goodsList.isEmpty()) {
             throw new BMSException("该商品类别下存在商品，请先确保商品不需要再做删除操作!");
         }
         int delGoodsType = goodsTypeDao.delGoodsType(goodsTypeId, user.getId());
-        if (delGoodsType<1){
+        if (delGoodsType < 1) {
             throw new BMSException("删除商品类别失败，请联系管理员处理！");
         }
         return true;
+    }
+
+    @Override
+    public GoodsTypeModel getGoodsTypeById(String goodsTypeId) {
+        GoodsTypeModel goodsTypeInfo = goodsTypeDao.getGoodsTypeById("0", goodsTypeId);
+        String createTime = goodsTypeInfo.getCreate_time();
+        goodsTypeInfo.setCreate_time(createTime.substring(0, createTime.length() - 2));
+        return goodsTypeInfo;
     }
 }

@@ -1,5 +1,7 @@
 package com.fhh.controller.goodstype;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fhh.base.BaseController;
 import com.fhh.entity.GoodsTypeModel;
 import com.fhh.entity.User;
@@ -18,8 +20,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
+ * @author biubiubiu小浩
  * @description 商品种类控制层
- * @author  biubiubiu小浩
  * @date 2018/10/15 21:37
  **/
 @Controller
@@ -92,5 +94,18 @@ public class GoodsTypeController extends BaseController {
         User user = this.getUserSession(request);
         boolean flag = goodsTypeService.delGoodsType(goodsTypeId, user);
         return this.poClient(response, flag);
+    }
+
+    /**
+     * 根据商品类型id获取商品类型
+     *
+     * @param goodsTypeId 商品类型id
+     * @author biubiubiu小浩
+     * @date 2018/11/7 19:58
+     **/
+    @GetMapping(value = "/bms/goodsType/getGoodsTypeDetailById")
+    public String getGoodsTypeDetailById(HttpServletResponse response, @NotBlank(message = "商品类型id不能为空！") String goodsTypeId) {
+        GoodsTypeModel goodsTypeInfo = goodsTypeService.getGoodsTypeById(goodsTypeId);
+        return this.poClient(response, JSONObject.parseObject(JSON.toJSONString(goodsTypeInfo)));
     }
 }
